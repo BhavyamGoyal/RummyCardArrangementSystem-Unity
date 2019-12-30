@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a92aa9ac01a0a374a8580d1b61377ea2, type: 3}
+  m_Name: CardAssets
+  m_EditorClassIdentifier: 
+  Cards:
+  - suit: 0
+    cards:
+    - {fileID: -8339798674793280666, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: 7450314346910242059, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: 2887856317421252638, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: -2880894646473429144, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: 980765864027529375, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: -2524535844195008582, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: -6672964933165265531, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: -8083086716567348819, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: 2088305130326485639, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: -6769186063334272391, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: 3850180587550573382, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: -3108102147801731531, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: -8406509737386156594, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+  - suit: 1
+    cards:
+    - {fileID: 8246896446169595055, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: -8182927317889646092, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: 4465712807344052035, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: -4894194661131659985, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: 2493190869041461674, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: 4313810329536373301, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: -7572842206472098368, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: -3599046957240696501, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: -5884797810683999104, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: 609740418975469939, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: 2244220346496085745, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: -1545589869607713014, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+    - {fileID: 3559610566736648697, guid: 4b9f9502b1f945244b56c9eaeeaaae23, type: 3}
+  - suit: 2
+    cards:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+  - suit: 3
+    cards:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
