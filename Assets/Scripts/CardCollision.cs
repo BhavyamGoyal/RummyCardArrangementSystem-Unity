@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class CardCollision : MonoBehaviour
 {
+    //To detect the card collision of the left card collider
     public CardView parentCardView;
-    //public IgnoreCollider ignoreCollider;
     bool selected = false;
-    //  [Inject] private TableService tableService;
 
     public void SetSelected(bool selected)
     {
@@ -16,7 +15,6 @@ public class CardCollision : MonoBehaviour
     private void Start()
     {
         parentCardView = GetComponentInParent<CardView>();
-        //tableService = parentCardView.GetTableService();
     }
     private void OnTriggerEnter2D(Collider2D collider)
     {
@@ -25,23 +23,15 @@ public class CardCollision : MonoBehaviour
             CardCollision cardCollided = collider.gameObject.GetComponent<CardCollision>();
             if (cardCollided != null)
             {
-                parentCardView.SetDummyParent(cardCollided.parentCardView.gameObject.GetComponent<CardView>().GetParent());
-                parentCardView.SetCardIndexToFill(cardCollided.parentCardView.transform.GetSiblingIndex());//, cardCollided.parentCardView.transform.parent.GetSiblingIndex());
-                                                                                                           //  Debug.Log("<color=blue> NEW GROUP FUCKING INDEX CAN FUCKING CREATE GROUP</color>"+ cardCollided.parentCardView.transform.parent.GetSiblingIndex());
-                                                                                                           //parentCardView.SetCardGroup(collision.gameObject.GetComponent<HandCardView>().GetGroupID());
+                parentCardView.SetDummyParent(cardCollided.parentCardView.gameObject.transform.parent);
+                parentCardView.SetCardIndexToFill(cardCollided.parentCardView.transform.GetSiblingIndex());
             }
             else if (collider.gameObject.GetComponent<GroupView>() != null)
             {
+                Debug.Log("[CardCollision]Collided with a group");
                 parentCardView.SetDummyParent(collider.gameObject.transform);
-                parentCardView.SetCardIndexToFill(collider.transform.childCount);//, collider.gameObject.transform.GetSiblingIndex());
-                                                                                 //parentCardView.SetCardIndexToFill(cardCollided.parentCardView.gameObject.transform.GetSiblingIndex());
+                parentCardView.SetCardIndexToFill(collider.transform.childCount);
             }
-
-
-            //if (collider.gameObject.GetComponent<GroupCreatorView>() != null)
-            //{
-            //    parentCardView.CanCreateGroupBool(true);
-            //}
         }
 
     }

@@ -5,3 +5,9 @@
     HEARTS,
     DIAMONDS
 }
+public enum ShiftDirectionEnum
+{
+    LEFT,
+    RIGHT,
+    NONE
+}
