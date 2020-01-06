@@ -6,26 +6,139 @@ using UnityEngine.UI;
 
 public class HandCardManager : MonoSingleton<HandCardManager>
 {
-    // manages all the cards and groups 
-    //for now maximum 4 groups can be created
-    public int groupCount = 1;
-    public List<GroupView> groupList = new List<GroupView>();
+    public List<Transform> groupList = new List<Transform>();
     public GameObject groupCreatorView;
-    public JsonDataClass cardsData;
+    CardSpawner spawner;
     public GameObject dummyCard;
     public CardAssets assets;
     public RectTransform handCards;
     public GameObject groupPrefab, cardPrefab;
-
-
+    public CardView selectedCard;
+    public Canvas canvas;
+    Vector2 groupCreatorDimensions;
     public void Start()
     {
-        StartCoroutine(LoadCards(setCards));
+        spawner = new CardSpawner(assets, cardPrefab);
+        GameObject group = GameObject.Instantiate(groupPrefab, handCards);
+        groupList.Add(group.transform);
+        StartCoroutine(spawner.LoadCards(spawner.setCards, group));
+        RectTransform creator = groupCreatorView.GetComponent<RectTransform>();
+        groupCreatorDimensions.x = creator.rect.width;
+        groupCreatorDimensions.y = creator.rect.height;
+    }
+    public void SelectCard(CardView card)
+    {
+        selectedCard = card;
+        card.CardSelected();
+        dummyCard.transform.SetParent(selectedCard.transform.parent);
+        dummyCard.transform.SetSiblingIndex(selectedCard.transform.GetSiblingIndex());
+        selectedCard.transform.SetParent(canvas.transform);
+        dummyCard.SetActive(true);
+    }
+
+    public void MoveSelectedCard(Vector2 position)
+    {
+        if (selectedCard != null)
+        {
+            ActivateCreateGroupUI(true);
+            selectedCard.transform.position = position;
+            CheckForNextCard();
+            CheckForPreviousCard();
+
+        }
+    }
+
+    private void CheckForNextCard()
+    {
+        Transform nextCard = null;
+        int dummyIndex = dummyCard.transform.GetSiblingIndex();
+        if (dummyIndex < dummyCard.transform.parent.childCount - 1)
+        {
+            nextCard = dummyCard.transform.parent.GetChild(dummyIndex + 1);
+            if (selectedCard.transform.position.x > nextCard.position.x)
+            {
+                dummyCard.transform.SetSiblingIndex(nextCard.GetSiblingIndex());
+            }
+        }
+        else
+        {
+            int groupIndex = dummyCard.transform.parent.GetSiblingIndex();
+            if (groupIndex < dummyCard.transform.parent.parent.childCount - 1)//check if allready in last group;
+            {
+                Transform nextGroup = dummyCard.transform.parent.parent.GetChild(groupIndex + 1);
+                if (nextGroup.childCount > 0)
+                {
+                    Transform firstCardOfNextGroup = nextGroup.GetChild(0);
+                    float dis = (firstCardOfNextGroup.position.x + dummyCard.transform.position.x) / 2;
+                    if (selectedCard.transform.position.x > dis)
+                    {
+                        dummyCard.transform.SetParent(nextGroup);
+                        dummyCard.transform.SetSiblingIndex(0);
+                    }
+                }
+
+            }
+        }
+
+    }
+
+    private void CheckForPreviousCard()
+    {
+        Transform prevCard = null;
+        int dummyIndex = dummyCard.transform.GetSiblingIndex();
+        if (dummyIndex > 0)
+        {
+            prevCard = dummyCard.transform.parent.GetChild(dummyIndex - 1);
+            if (selectedCard.transform.position.x < prevCard.position.x)
+            {
+                dummyCard.transform.SetSiblingIndex(prevCard.GetSiblingIndex());
+            }
+        }
+        else {
+            int groupIndex = dummyCard.transform.parent.GetSiblingIndex();
+            if (groupIndex > 0)
+            {
+                Transform prevGroup = dummyCard.transform.parent.parent.GetChild(groupIndex - 1);
+                if (prevGroup.childCount > 0) {
+                    Transform lastCardOfPrevGroup = prevGroup.GetChild(prevGroup.childCount - 1);
+                    float dis = (lastCardOfPrevGroup.position.x + dummyCard.transform.position.x) / 2;
+                    if (selectedCard.transform.position.x < dis)
+                    {
+                        dummyCard.transform.SetParent(prevGroup);
+                        dummyCard.transform.SetSiblingIndex(prevGroup.childCount - 1);
+                    }
+                }
+
+            }
+        }
+
+    }
+
+    public void OnCardRelease()
+    {
+        if (selectedCard != null)
+        {
+            dummyCard.SetActive(false);
+            if (CanCreateGroup() && selectedCard.transform.position.x > (groupCreatorView.transform.position.x - (groupCreatorDimensions.x)) && selectedCard.transform.position.y < (groupCreatorView.transform.position.y + (groupCreatorDimensions.y)))
+            {
+                selectedCard.transform.SetParent(AddGroup());
+            }
+            else
+            {
+                ActivateCreateGroupUI(false);
+                selectedCard.transform.SetParent(dummyCard.transform.parent);
+                selectedCard.transform.SetSiblingIndex(dummyCard.transform.GetSiblingIndex());
+            }
+            selectedCard.CardReleased();
+            dummyCard.transform.SetParent(null);
+            selectedCard = null;
+            CheckForEmptyGroups();
+        }
     }
 
     public Transform AddGroup()
     {
-        groupList.Add(GameObject.Instantiate(groupPrefab, handCards).GetComponent<GroupView>());
+        groupList.Add(GameObject.Instantiate(groupPrefab, handCards).transform);
         return groupList[groupList.Count - 1].gameObject.transform;
     }
 
@@ -37,68 +150,14 @@ public class HandCardManager : MonoSingleton<HandCardManager>
             {
                 Destroy(groupList[i].gameObject);
                 groupList.RemoveAt(i);
+                break;
             }
         }
-    }
-
-    private void setCards(JsonDataClass cardsData)
-    {
-        GameObject group;
-        this.cardsData = cardsData;
-        group = GameObject.Instantiate(groupPrefab, handCards);
-        groupList.Add(group.GetComponent<GroupView>());
-        for (int i = 0; i < cardsData.value.cards.Count; i++)
-        {
-            Sprite cardSprite = null;
-            SUITS suit = SUITS.SPAIDS;
-            char[] card = cardsData.value.cards[i].ToCharArray();
-            int num = int.Parse(cardsData.value.cards[i].Substring(0, card.Length - 1));
-            switch (card[card.Length - 1])
-            {
-                case 's':
-                    suit = SUITS.SPAIDS;
-                    cardSprite = assets.GetCardSprite(SUITS.SPAIDS, num);
-                    break;
-                case 'c':
-                    suit = SUITS.CLUBS;
-                    cardSprite = assets.GetCardSprite(SUITS.CLUBS, num);
-                    break;
-                case 'h':
-                    suit = SUITS.HEARTS;
-                    cardSprite = assets.GetCardSprite(SUITS.HEARTS, num);
-                    break;
-                case 'd':
-                    suit = SUITS.DIAMONDS;
-                    cardSprite = assets.GetCardSprite(SUITS.DIAMONDS, num);
-                    break;
-            }
-            Image cardImage = GameObject.Instantiate(cardPrefab, group.transform).GetComponent<Image>();
-            cardImage.sprite = cardSprite;
-            cardImage.gameObject.GetComponent<CardView>().SetCardData(num, suit, dummyCard);
-        }
-    }
-
-
-    public static IEnumerator LoadCards(Action<JsonDataClass> callback)
-    {
-        Debug.Log("[HandCardManager]Started Loading Cards");
-        ResourceRequest LoadRequest = Resources.LoadAsync("StartingCards");
-        yield return LoadRequest;
-        TextAsset data = LoadRequest.asset as TextAsset;
-        Debug.Log("[HandCardManager]Finished Loading Data From JSON File " + data.text);
-
-        if (data != null)
-        {
-            JsonDataClass cardsData = JsonUtility.FromJson<JsonDataClass>(data.text);
-
-            callback(cardsData);
-        }
-
     }
 
     public bool CanCreateGroup()
     {
-        if (groupCount <= 4)
+        if (groupList.Count <= 4)
         {
             return true;
         }
@@ -116,4 +175,6 @@ public class HandCardManager : MonoSingleton<HandCardManager>
             groupCreatorView.gameObject.SetActive(false);
         }
     }
+
+
 }
